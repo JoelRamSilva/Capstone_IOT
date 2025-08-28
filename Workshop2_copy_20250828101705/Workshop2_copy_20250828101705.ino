@@ -1,6 +1,6 @@
-#include <WiFi.h>
-// #include "DHT.h"
+#include "WiFi.h"
 #include "ThingSpeak.h"
+#include "utility/wl_definitions.h"
 #include <SPI.h>
 #include <Adafruit_BME680.h>
 #include <Adafruit_Sensor.h>
@@ -54,7 +54,7 @@ void setup() {
 }
 
 void loop() {
-  
+
   unsigned long endTime = bme.beginReading();
   if (endTime == 0) {
     Serial.println(F("Failed to begin reading :("));
@@ -104,10 +104,12 @@ void loop() {
 
   // Upload to ThingSpeak (Using Field1, Field2, so on of Channel)
   ThingSpeak.setField(1, bme.temperature);
-  ThingSpeak.setField(2, bme.pressure);
-  ThingSpeak.setField(3, bme.humidity);
+  ThingSpeak.setField(2, bme.humidity);
+  ThingSpeak.setField(3, bme.pressure);
   ThingSpeak.setField(4, bme.gas_resistance);
-  ThingSpeak.setField(5, bme.readAltitude(SEALEVELPRESSURE_HPA));
+  ThingSpeak.setField(5, );
+  ThingSpeak.setField(6, );
+  ThingSpeak.setField(7, bme.gas_resistance);
 
   int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
   if (x == 200) {
