@@ -13,13 +13,6 @@ const char* password = "RuleNumber9";
 unsigned long myChannelNumber = 3051754;
 const char * myWriteAPIKey = "5B7F31T5R7TPH4MC";
 
-// Setting DHT Sensor
-// #define DHTPIN 4        // ESP32 pins connected to sensor 
-// #define DHTTYPE DHT22   // switch to DHT11 when using DHT
-// DHT dht(DHTPIN, DHTTYPE);
-
-// Sensors 
-
 
 WiFiClient client;
 
@@ -61,17 +54,7 @@ void setup() {
 }
 
 void loop() {
-  // // read data from sensor
-  // float h = dht.readHumidity();
-  // float t = dht.readTemperature(true); // true → (°F), false → (°C)
-
-  // // check sensor error
-  // if (isnan(h) || isnan(t)) {
-  //   Serial.println("DHT fail to read sensor");
-  //   delay(2000);
-  //   return;
-  // }
-
+  
   unsigned long endTime = bme.beginReading();
   if (endTime == 0) {
     Serial.println(F("Failed to begin reading :("));
@@ -118,16 +101,13 @@ void loop() {
   Serial.println(F(" m"));
 
   Serial.println();
-  delay(2000);
 
-  Serial.print("Temperature (°F): ");
-  Serial.println(t);
-  Serial.print("Humidity (%): ");
-  Serial.println(h);
-
-  // Upload to ThingSpeak (Using Field1, Field2 of Channel)
+  // Upload to ThingSpeak (Using Field1, Field2, so on of Channel)
   ThingSpeak.setField(1, bme.temperature);
-  ThingSpeak.setField(2, bme.humidity);
+  ThingSpeak.setField(2, bme.pressure);
+  ThingSpeak.setField(3, bme.humidity);
+  ThingSpeak.setField(4, bme.gas_resistance);
+  ThingSpeak.setField(5, bme.readAltitude(SEALEVELPRESSURE_HPA));
 
   int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
   if (x == 200) {
