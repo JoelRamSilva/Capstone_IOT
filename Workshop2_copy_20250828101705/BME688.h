@@ -1,30 +1,13 @@
-// #include "utility/wl_definitions.h"
-#include "D3_WiFi.h"
-#include "ThingSpeak.h"
-#include <SPI.h>
-#include <Adafruit_BME680.h>
-#include <Adafruit_Sensor.h>
+#define BME_SCK 13
+#define BME_MISO 12
+#define BME_MOSI 11
+#define BME_CS 10
 
-// Setting WiFi 
-const char* ssid = "CapstoneWifi2";
-const char* password = "RuleNumber9";
-
-// Setting ThingSpeak
-unsigned long myChannelNumber = 3051754;
-const char * myWriteAPIKey = "5B7F31T5R7TPH4MC";
-
-
-WiFiClient client;
-
-// Create a sensor object
 Adafruit_BME680 bme; // I2C
 //Adafruit_BME680 bme(BME_CS); // hardware SPI
-//Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
-
-void setup() {
-  Serial.begin(115200);
-  //dht.begin();
-
+//Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
+void BME688_setup(){
+  PMSA003I_SetUp();
   while (!Serial);
   Serial.println(F("BME680 async test"));
 
@@ -39,22 +22,9 @@ void setup() {
   bme.setPressureOversampling(BME680_OS_4X);
   bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
   bme.setGasHeater(320, 150); // 320*C for 150 ms
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-
-  Serial.print("WiFi setting");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWiFi connected");
-
-  ThingSpeak.begin(client);
 }
 
-void loop() {
-
+void BME688_loop(){
   unsigned long endTime = bme.beginReading();
   if (endTime == 0) {
     Serial.println(F("Failed to begin reading :("));
@@ -107,8 +77,8 @@ void loop() {
   ThingSpeak.setField(2, bme.humidity);
   ThingSpeak.setField(3, bme.pressure);
   ThingSpeak.setField(4, bme.gas_resistance);
-  // ThingSpeak.setField(5, );
-  // ThingSpeak.setField(6, );
+  ThingSpeak.setField(5, );
+  ThingSpeak.setField(6, );
   ThingSpeak.setField(7, bme.gas_resistance);
 
   int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
